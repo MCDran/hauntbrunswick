@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ES6",                  // Modern JavaScript
+    "esModuleInterop": true,          // Interop between CommonJS and ES modules
+    "moduleResolution": "node",       // Node-style module resolution
+    "skipLibCheck": true,             // Speeds up compilation
+    "strict": true,
+    "outDir": "./dist"
+  },
+  "ts-node": {
+    "esm": true                       // Enable ESM support for ts-node
+  }
+}
