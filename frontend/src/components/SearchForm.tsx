@@ -28,11 +28,19 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearchComplete }) => {
             const response = await fetch(`http://localhost:5000/api/registrations/search?registration_number=${registrationNumber}`);
 
             if (!response.ok) {
-                throw new Error('No registration found for that number');
+                const errorMessage = response.status === 404
+                    ? 'Registration not found'
+                    : 'An error occurred while fetching the registration';
+                throw new Error(errorMessage);
             }
 
             const data = await response.json();
-            onSearchComplete(data.data[0]);  // Pass the result to the parent component
+            if (data.data && data.data.length > 0) {
+                onSearchComplete(data.data[0]);  // Pass the first registration result to the parent component
+            } else {
+                onSearchComplete(null);
+                setError('No registration found for that number');
+            }
         } catch (err) {
             setError((err as Error).message);
             onSearchComplete(null);
@@ -49,10 +57,12 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearchComplete }) => {
                     type="text"
                     value={registrationNumber}
                     onChange={(e) => setRegistrationNumber(e.target.value)}
+                    required
                 />
             </label>
-            <button type="submit" disabled={loading}>Search</button>
-            {loading && <p>Loading...</p>}
+            <button type="submit" disabled={loading || !registrationNumber.trim()}>
+                {loading ? 'Searching...' : 'Search'}
+            </button>
             {error && <p style={{ color: 'red' }}>{error}</p>}
         </form>
     );

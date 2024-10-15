@@ -5,7 +5,7 @@ import { faqList } from '../components/faq-list.ts';  // Import the FaqPage list
 
 const FaqPage: React.FC = () => {
     return (
-        <div>
+        <div className="vertical-container">
             <h1>Frequently Asked Questions</h1>
             <ul>
                 {faqList.map((faq, index) => (

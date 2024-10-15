@@ -5,41 +5,94 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+ul {
+  list-style-type: none; /* Removes the bullet points */
+  padding: 0; /* Removes the default padding */
+  margin-bottom: 0.3em;
 }
 
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-.vcontainer {
+/* styles/HomePage.css */
+.homepage-container {
   display: flex;
-  place-content: center;
+  flex-direction: row;
+  justify-content: center;  /* Center horizontally */
+  align-items: center;      /* Center vertically */
+  height: 100vh;            /* Full viewport height */
+  gap: 20px;                /* Space between buttons */
+  padding: 20px;            /* Padding for some spacing */
+  flex-wrap: wrap;          /* Allow wrapping of buttons if needed */
+  box-sizing: border-box;   /* Include padding in width calculation */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #FF0000;  /* Button background color */
+  color: white;
+  text-decoration: none;      /* Remove underline from links */
+  font-size: 1.2rem;
+  text-align: center;
+  border-radius: 8px;         /* Rounded corners */
+  margin: 0.5em 0.5em 0 0.5em;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Button shadow */
+  transition: background-color 0.3s ease;     /* Smooth transition for hover */
+  min-width: 150px;           /* Minimum width for readability */
+  max-width: 200px;           /* Limit button's maximum width */
+  flex: 1 1 200px;            /* Ensure button is flexible and adjusts */
+}
+
+.button:hover {
+  background-color: #CC0000;  /* Darken button on hover */
+  box-shadow: 0 0 15px red, 0 0 30px red, 0 0 45px red;
+  color: black;
+}
+
+/* Mobile-first design - Smaller screens */
+@media (max-width: 768px) {
+  .homepage-container {
+    flex-direction: column; /* Stack buttons vertically */
+    align-items: center;    /* Center items vertically */
+    gap: 10px;              /* Add more space between buttons */
+    padding: 10px;          /* Reduce padding */
   }
-  to {
-    transform: rotate(360deg);
+
+  .button {
+    width: 80%;            /* Reduce button width to 80% of the screen */
+    max-width: 250px;       /* Keep the max-width under control */
+    font-size: 1rem;        /* Adjust font size to fit mobile */
+    padding: 10px 15px;     /* Adjust padding for smaller buttons */
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* Large screens (e.g., desktops) */
+@media (min-width: 1024px) {
+  .homepage-container {
+    gap: 30px;              /* Increase spacing between buttons */
+  }
+
+  .button {
+    max-width: 250px;        /* Slightly larger buttons on large screens */
   }
 }
 
-.card {
-  padding: 2em;
+.form-group {
+  margin-bottom: 20px; /* Adds space between each section */
+}
+
+.footer-container {
+  display: flex;
+  justify-content: center; /* Centers the images horizontally */
+  align-items: center; /* Aligns the images vertically */
+  gap: 20px; /* Adds space between the images */
+  margin-bottom: 10px; /* Adds space between images and text */
+}
+
+.footer-img {
+  width: 50px; /* Adjust the size of the images */
+  height: auto; /* Maintain the aspect ratio of the images */
+}
+
+footer p {
+  margin-top: 10px; /* Adds space between the images and text */
+  font-size: 14px; /* Adjusts the text size */
 }

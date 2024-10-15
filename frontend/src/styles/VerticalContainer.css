@@ -1,0 +1,27 @@
+.vertical-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px; /* Limit the max width for larger screens */
+    padding: 20px;
+    margin: 0 auto; /* Center the container horizontally */
+    box-sizing: border-box; /* Include padding and border in the element's total width/height */
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 15px red, 0 0 30px red, 0 0 45px red;
+}
+
+@media (max-width: 768px) {
+    .vertical-container {
+        padding: 15px;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .vertical-container {
+        padding: 10px;
+        max-width: 100%;
+    }
+}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import TimeSlotSelector from './TimeSlotSelector';
 import AttendeeList from './AttendeeList';
+import {Link} from "react-router-dom";
 
 interface TimeSlot {
     time_slot: string;
@@ -16,50 +17,42 @@ const RegisterForm: React.FC = () => {
     const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
     const [email, setEmail] = useState('');
     const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
-    const [attendees, setAttendees] = useState<Attendee[]>([{ name: '', age: '16-20' }]);
+    const [attendees, setAttendees] = useState<Attendee[]>([{name: '', age: '16-20'}]);
     const [isChecked, setIsChecked] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
     // Fetch available time slots on load
-    useEffect(() => {
-        const fetchTimeSlots = async () => {
-            setLoading(true); // Start loading
+    const fetchTimeSlots = async () => {
+        setLoading(true); // Start loading
+        try {
+            const response = await fetch('http://192.168.50.180:5000/api/time-slots');
 
-            try {
-                const response = await fetch('http://192.168.50.180:5000/api/time-slots');
-
-                // Check if the response status is not OK
-                if (!response.ok) {
-                    setError(`Failed to fetch time slots. Status: ${response.status}`);
-                    return;  // Exit the function here, no need to proceed
-                }
-
-                // Ensure the response is JSON
-                const contentType = response.headers.get('content-type');
-                if (!contentType || !contentType.includes('application/json')) {
-                    setError('Invalid response format. Expected JSON.');
-                    return;  // Exit the function if it's not JSON
-                }
-
-                // Parse the response body
-                const data = await response.json();
-
-                // Handle data appropriately
-                setTimeSlots(data.data);
-
-            } catch (err) {
-                // Log error for debugging but handle it gracefully without rethrowing
-                console.error('Error in fetchTimeSlots:', err);
-                setError('An error occurred while fetching time slots.');
-            } finally {
-                setLoading(false); // Stop loading regardless of success or failure
+            if (!response.ok) {
+                setError(`Failed to fetch time slots. Status: ${response.status}`);
+                return;
             }
-        };
 
-        // Execute the fetch function and handle errors locally
-        fetchTimeSlots().catch(console.error);
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                setError('Invalid response format. Expected JSON.');
+                return;
+            }
+
+            const data = await response.json();
+            setTimeSlots(data.data); // Update the time slots with fetched data
+        } catch (err) {
+            console.error('Error in fetchTimeSlots:', err);
+            setError('An error occurred while fetching time slots.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Fetch time slots on component mount
+    useEffect(() => {
+        fetchTimeSlots();
     }, []);
 
     const handleAddAttendee = () => {
@@ -84,7 +77,6 @@ const RegisterForm: React.FC = () => {
             return;
         }
 
-        // Ensure there are enough spots for the number of attendees
         const selectedSlot = timeSlots.find(slot => slot.time_slot === selectedTimeSlot);
         if (!selectedSlot) {
             setError('Please select a valid time slot.');
@@ -116,6 +108,9 @@ const RegisterForm: React.FC = () => {
             setEmail('');
             setAttendees([{ name: '', age: '16-20' }]);
             setSelectedTimeSlot('');
+
+            // Refetch the time slots to update the available spots
+            fetchTimeSlots();
         } catch (err) {
             setError((err as Error).message);
         } finally {
@@ -124,30 +119,37 @@ const RegisterForm: React.FC = () => {
     };
 
     return (
+
         <form onSubmit={handleSubmit}>
             {/* Time Slot Selector */}
-            <TimeSlotSelector
-                timeSlots={timeSlots}
-                selectedTimeSlot={selectedTimeSlot}
-                onSelectTimeSlot={setSelectedTimeSlot}
-            />
+            <div className="form-group">
+                <TimeSlotSelector
+                    timeSlots={timeSlots}
+                    selectedTimeSlot={selectedTimeSlot}
+                    onSelectTimeSlot={setSelectedTimeSlot}
+                />
+            </div>
 
             {/* Email Input */}
-            <label>Email Address:</label>
-            <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
+            <div className="form-group">
+                <label>Email Address:</label>
+                <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                />
+            </div>
 
             {/* Attendee List */}
-            <AttendeeList
-                attendees={attendees}
-                onAddAttendee={handleAddAttendee}
-                onUpdateAttendee={handleUpdateAttendee}
-                onRemoveAttendee={handleRemoveAttendee}
-            />
+            <div className="form-group">
+                <AttendeeList
+                    attendees={attendees}
+                    onAddAttendee={handleAddAttendee}
+                    onUpdateAttendee={handleUpdateAttendee}
+                    onRemoveAttendee={handleRemoveAttendee}
+                />
+            </div>
 
             {/* Agreement Checkbox */}
             <label>
@@ -156,20 +158,23 @@ const RegisterForm: React.FC = () => {
                     checked={isChecked}
                     onChange={(e) => setIsChecked(e.target.checked)}
                 />
-                I agree to the terms and conditions
+                I/We have read, understood, and agree to the <Link to="/">What to Expect</Link> for the 16+ night.
             </label>
 
             {/* Submit Button */}
-            <button type="submit" disabled={loading}>
-                Submit
-            </button>
+            <div className="form-group">
+                <button type="submit" className="button" disabled={loading}>
+                    Submit
+                </button>
+            </div>
 
-            {/* Error or Success Messages */}
-            {loading && <p>Loading...</p>}
-            {error && <p style={{ color: 'red' }}>{error}</p>}
-            {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+                {/* Error or Success Messages */}
+                {loading && <p>Loading...</p>}
+                {error && <p style={{color: 'red'}}>{error}</p>}
+                {successMessage && <p style={{color: 'green'}}>{successMessage}</p>}
         </form>
-    );
+)
+;
 };
 
 export default RegisterForm;

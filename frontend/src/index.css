@@ -1,22 +1,29 @@
-:root {
-  font-family: 'Creepster', 'Open Sans', sans-serif;
-  font-weight: 400;
+@import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
 
+:root {
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: rgb(255, 255, 255);
+  background-image: url("../public/assets/hauntbrunswickbackground24.png");
+}
+
+@font-face {
+  font-family: 'Creepster', cursive, "Open Sans", sans-serif;
+  src: url("../public/fonts/Creepster.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #ff4e4e;
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #ff0000;
 }
 
 body {
+  font-family: "Open Sans", sans-serif;
   margin: 0 5vw;
   display: flex;
   place-items: center;
@@ -26,9 +33,25 @@ body {
   overflow-y: scroll;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Creepster', sans-serif; /* Base font for all headings */
+  color: #fff; /* Common color for all headings */
+  line-height: 1.2; /* Common line-height for all headings */
+  margin: 0.5em 0; /* Common margin for spacing */
+  text-align: center; /* Center all headings by default */
+}
+
 h1 {
-  font-size: 3.2em;
-  font-weight: 700;
+  color: red;
+  font-size: 4rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+h3 {
+  font-size: 1.5rem;
 }
 
 button {

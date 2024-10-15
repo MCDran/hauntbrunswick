@@ -1,6 +1,6 @@
-import mysql from 'mysql2/promise'; // Use mysql2 with promise support
+import mysql, {ResultSetHeader} from 'mysql2/promise'; // Use mysql2 with promise support
 import dotenv from 'dotenv';
-import { RowDataPacket, ResultSetHeader } from 'mysql2';
+import { RowDataPacket } from 'mysql2';
 
 dotenv.config();
 
@@ -47,94 +47,147 @@ export const registerAttendees = async (
     email: string,
     time_slot: string,
     attendees: { name: string; age: number }[]
-): Promise<void> => {
+): Promise<string> => {
     const connection = await pool.getConnection(); // Get connection
 
     await connection.beginTransaction(); // Start transaction
 
-    // Fetch spots_remaining for the time_slot
-    const [timeSlotRows] = await connection.query<RowDataPacket[]>(
-        'SELECT spots_remaining FROM time_slots WHERE time_slot = ? FOR UPDATE',
-        [time_slot]
-    );
+    try {
+        // Decrement spots_remaining
+        await connection.query(
+            'UPDATE time_slots SET spots_remaining = spots_remaining - ? WHERE time_slot = ?',
+            [attendees.length, time_slot]
+        );
 
-    if (timeSlotRows.length === 0) {
-        throw new Error('Time slot not found');
+        // Join attendee names and ages into strings
+        const names = attendees.map((attendee) => attendee.name).join(', ');
+        const ages = attendees.map((attendee) => String(attendee.age)).join(', ');
+
+        // Generate a registration number
+        const registrationNumber = generateRegistrationNumber();
+
+        // Insert the registration record with both names and ages, and the generated registration number
+        await connection.query<ResultSetHeader>(
+            'INSERT INTO registrations (email, time_slot, names, ages, registration_number) VALUES (?, ?, ?, ?, ?)',  // Include both names, ages, and the registration number
+            [email, time_slot, names, ages, registrationNumber]
+        );
+
+        // Commit transaction
+        await connection.commit();
+
+        // Return the generated registration number for use in other processes (like QR code generation)
+        return registrationNumber;
+    } catch (error) {
+        await connection.rollback();
+        throw error; // Ensure the error is thrown so it gets caught in the calling function
+    } finally {
+        connection.release(); // Release the connection
     }
-
-    const spotsRemaining = timeSlotRows[0].spots_remaining;
-
-    if (spotsRemaining < attendees.length) {
-        throw new Error('Not enough spots remaining for the selected time slot');
-    }
-
-    // Decrement spots_remaining
-    await connection.query(
-        'UPDATE time_slots SET spots_remaining = spots_remaining - ? WHERE time_slot = ?',
-        [attendees.length, time_slot]
-    );
-
-    // Insert registration
-    const [result] = await connection.query<ResultSetHeader>(
-        'INSERT INTO registrations (email, time_slot) VALUES (?, ?)',
-        [email, time_slot]
-    );
-
-    const registrationId = result.insertId;
-
-    // Insert attendees
-    const attendeePromises = attendees.map((attendee) =>
-        connection.query(
-            'INSERT INTO attendees (registration_id, name, age) VALUES (?, ?, ?)',
-            [registrationId, attendee.name, attendee.age]
-        )
-    );
-
-    await Promise.all(attendeePromises);
-
-    // Commit transaction
-    await connection.commit();
-    connection.release(); // Release connection in the success case
 };
+
+
+function generateRegistrationNumber(): string {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');      // DD
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // MM
+    const year = String(now.getFullYear()).slice(-2);        // YY
+    const randomFourDigits = Math.floor(1000 + Math.random() * 9000);
+    return `LC-${day}${month}${year}-${randomFourDigits}`;
+}
 
 // Function to cancel a registration
 export const cancelRegistration = async (registrationId: number): Promise<void> => {
-    const connection = await pool.getConnection(); // Get a connection from the pool
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
 
-    await connection.beginTransaction(); // Begin a transaction
+        // Fetch the registration and its associated time_slot
+        const [registrationRows] = await connection.query<RowDataPacket[]>(
+            'SELECT names, time_slot FROM registrations WHERE id = ?',
+            [registrationId]
+        );
 
-    // Fetch the registration and its associated time_slot
-    const [registrationRows] = await connection.query<RowDataPacket[]>(
-        'SELECT time_slot FROM registrations WHERE id = ?',
-        [registrationId]
-    );
+        if (registrationRows.length === 0) {
+            throw new Error('Registration not found');
+        }
 
-    if (registrationRows.length === 0) {
-        throw new Error('Registration not found');
+        const { names, time_slot } = registrationRows[0];
+
+        // Count the number of attendees
+        const namesArray = names.split(',');
+        const attendeeCount = namesArray.length;
+
+        // Increment spots_remaining by the number of attendees being removed
+        await connection.query(
+            'UPDATE time_slots SET spots_remaining = spots_remaining + ? WHERE time_slot = ?',
+            [attendeeCount, time_slot]
+        );
+
+        // Delete the registration
+        await connection.query('DELETE FROM registrations WHERE id = ?', [registrationId]);
+
+        await connection.commit();
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
     }
+};
 
-    const time_slot = registrationRows[0].time_slot;
+export const removeAttendeeFromRegistration = async (registrationId: number, attendeeName: string): Promise<void> => {
+    const connection = await pool.getConnection();
+    try {
+        await connection.beginTransaction();
 
-    // Count the number of attendees for this registration
-    const [attendeeCountRows] = await connection.query<RowDataPacket[]>(
-        'SELECT COUNT(*) as attendeeCount FROM attendees WHERE registration_id = ?',
-        [registrationId]
-    );
+        // Fetch the current names and ages for the registration
+        const [registrationRows] = await connection.query<RowDataPacket[]>(
+            'SELECT names, ages, time_slot FROM registrations WHERE id = ?',
+            [registrationId]
+        );
 
-    const attendeeCount = attendeeCountRows[0].attendeeCount;
+        if (registrationRows.length === 0) {
+            throw new Error('Registration not found');
+        }
 
-    // Increment the spots_remaining by the number of attendees
-    await connection.query(
-        'UPDATE time_slots SET spots_remaining = spots_remaining + ? WHERE time_slot = ?',
-        [attendeeCount, time_slot]
-    );
+        const { names, ages, time_slot } = registrationRows[0];
 
-    // Delete attendees and the registration
-    await connection.query('DELETE FROM attendees WHERE registration_id = ?', [registrationId]);
-    await connection.query('DELETE FROM registrations WHERE id = ?', [registrationId]);
+        const namesArray = names.split(',');
+        const agesArray = ages.split(',');
 
-    // Commit the transaction
-    await connection.commit();
+        // Find the index of the attendee to remove
+        const attendeeIndex = namesArray.findIndex((name: string) => name.trim() === attendeeName.trim());
 
-    connection.release(); // Ensure connection is released properly
+        if (attendeeIndex === -1) {
+            throw new Error(`Attendee ${attendeeName} not found in registration`);
+        }
+
+        // Remove the attendee from both names and ages arrays
+        namesArray.splice(attendeeIndex, 1);
+        agesArray.splice(attendeeIndex, 1);
+
+        if (namesArray.length === 0) {
+            // If no more attendees remain, delete the entire registration
+            await connection.query('DELETE FROM registrations WHERE id = ?', [registrationId]);
+        } else {
+            // Otherwise, update the registration with the new names and ages
+            await connection.query(
+                'UPDATE registrations SET names = ?, ages = ? WHERE id = ?',
+                [namesArray.join(','), agesArray.join(','), registrationId]
+            );
+        }
+
+        // Increment the spots_remaining in the corresponding time slot
+        await connection.query(
+            'UPDATE time_slots SET spots_remaining = spots_remaining + 1 WHERE time_slot = ?',
+            [time_slot]
+        );
+
+        await connection.commit();
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
 };

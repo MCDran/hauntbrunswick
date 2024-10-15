@@ -5,7 +5,7 @@ export const faqList = [
     {
         header: "What are the event dates and times?",
         items: [
-            "The event will be held from 6:00 p.m. until 9:00 p.m. on October 26th and 27th.",
+            "The event will be held from 6:00 PM until 9:00 PM on October 26th and 27th.",
             "Time slots may vary, so check the registration page or city website for details."
         ]
     },
