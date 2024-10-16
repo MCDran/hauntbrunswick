@@ -60,7 +60,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearchComplete }) => {
                     required
                 />
             </label>
-            <button type="submit" disabled={loading || !registrationNumber.trim()}>
+            <button type="submit" className="button" disabled={loading || !registrationNumber.trim()}>
                 {loading ? 'Searching...' : 'Search'}
             </button>
             {error && <p style={{ color: 'red' }}>{error}</p>}

@@ -1,0 +1,53 @@
+.remove-button {
+    margin: 0.5em 0 0 1em; /* Space between the inputs and the button */
+    padding: 8px 12px;
+    background-color: #ff0000; /* Red button */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    max-width: 6em;
+}
+
+.remove-button:hover {
+    background-color: #cc0000; /* Darken the button on hover */
+}
+
+.attendee-inputs {
+    flex: 1; /* Take up all available space except the button */
+    display: flex;
+    gap: 10px; /* Space between name and age fields */
+    align-items: center;
+}
+
+.attendee-inputs input {
+    width: 100%; /* Let inputs take full width within the flex container */
+}
+
+.attendee-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.attendee-entry {
+    display: flex;
+    align-items: center; /* Align items vertically centered */
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .attendee-entry {
+        display: flex;
+        flex-direction: column; /* Stack name, age, and remove button vertically */
+        margin: 20px 0; /* Add some space between each attendee entry */
+    }
+
+    .remove-button {
+        margin-top: 10px; /* Add space between the age field and the remove button */
+        align-self: flex-start; /* Align the remove button to the left */
+        width: auto; /* Ensure button doesn't stretch */
+    }
+}

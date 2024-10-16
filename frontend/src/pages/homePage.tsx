@@ -13,12 +13,14 @@ const HomePage: React.FC = () => {
                 Brunswick's Finest Haunted House
             </h2>
             <div>
-                <Link to="/faq" className="button">Go to FAQ</Link>
                 <Link to="/register" className="button">Register here</Link>
-                <Link to="/registrations" className="button">Check reservation status</Link>
             </div>
             <WhatToExpect/>
-            <Footer />
+            <div>
+                <Link to="/faq" className="button">Go to FAQ</Link>
+                <Link to="/registrations" className="button">Check/Cancel reservation</Link>
+            </div>
+            <Footer/>
         </VerticalContainer>
     );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SearchForm from '../components/SearchForm';  // Import the SearchForm component
+import SearchForm from '../components/SearchForm'; // Import the SearchForm component
 
 interface Registration {
     id: number;

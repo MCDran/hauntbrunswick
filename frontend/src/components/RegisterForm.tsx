@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import TimeSlotSelector from './TimeSlotSelector';
 import AttendeeList from './AttendeeList';
 import {Link} from "react-router-dom";
+import '../styles/RegisterForm.css'
+import '../App.css'
+import TimeSlotSelector from "./TimeSlotSelector.tsx";
 
 interface TimeSlot {
     time_slot: string;
@@ -119,62 +121,57 @@ const RegisterForm: React.FC = () => {
     };
 
     return (
+        <div className="register-container">
+            {/* Time Slot Selector - Left side */}
+            <TimeSlotSelector
+                timeSlots={timeSlots}
+                selectedTimeSlot={selectedTimeSlot}
+                onSelectTimeSlot={setSelectedTimeSlot}
+            />
 
-        <form onSubmit={handleSubmit}>
-            {/* Time Slot Selector */}
-            <div className="form-group">
-                <TimeSlotSelector
-                    timeSlots={timeSlots}
-                    selectedTimeSlot={selectedTimeSlot}
-                    onSelectTimeSlot={setSelectedTimeSlot}
-                />
+            {/* Form - Right side */}
+            <div className="registration-form">
+                <form onSubmit={handleSubmit}>
+                    <div className="form-group">
+                        <label>Email Address:</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <AttendeeList
+                            attendees={attendees}
+                            onAddAttendee={handleAddAttendee}
+                            onRemoveAttendee={handleRemoveAttendee}
+                            onUpdateAttendee={handleUpdateAttendee}
+
+                        />
+                    </div>
+
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={(e) => setIsChecked(e.target.checked)}
+                        />
+                        I/We have read, understood, and agree to the <Link to="/">What to Expect</Link> for the 16+ night.
+                    </label>
+
+                    <button type="submit" className="button" disabled={loading}>
+                        Submit
+                    </button>
+
+                    {loading && <p>Loading...</p>}
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
+                    {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+                </form>
             </div>
-
-            {/* Email Input */}
-            <div className="form-group">
-                <label>Email Address:</label>
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-            </div>
-
-            {/* Attendee List */}
-            <div className="form-group">
-                <AttendeeList
-                    attendees={attendees}
-                    onAddAttendee={handleAddAttendee}
-                    onUpdateAttendee={handleUpdateAttendee}
-                    onRemoveAttendee={handleRemoveAttendee}
-                />
-            </div>
-
-            {/* Agreement Checkbox */}
-            <label>
-                <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={(e) => setIsChecked(e.target.checked)}
-                />
-                I/We have read, understood, and agree to the <Link to="/">What to Expect</Link> for the 16+ night.
-            </label>
-
-            {/* Submit Button */}
-            <div className="form-group">
-                <button type="submit" className="button" disabled={loading}>
-                    Submit
-                </button>
-            </div>
-
-                {/* Error or Success Messages */}
-                {loading && <p>Loading...</p>}
-                {error && <p style={{color: 'red'}}>{error}</p>}
-                {successMessage && <p style={{color: 'green'}}>{successMessage}</p>}
-        </form>
-)
-;
+        </div>
+    );
 };
 
 export default RegisterForm;

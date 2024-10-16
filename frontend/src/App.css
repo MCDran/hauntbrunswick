@@ -33,7 +33,7 @@ ul {
   font-size: 1.2rem;
   text-align: center;
   border-radius: 8px;         /* Rounded corners */
-  margin: 0.5em 0.5em 0 0.5em;
+  margin: 0.5em 0.5em 0.5em 0.5em;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Button shadow */
   transition: background-color 0.3s ease;     /* Smooth transition for hover */
   min-width: 150px;           /* Minimum width for readability */
@@ -95,4 +95,32 @@ ul {
 footer p {
   margin-top: 10px; /* Adds space between the images and text */
   font-size: 14px; /* Adjusts the text size */
+}
+
+.register-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.time-slot-selector {
+  width: 45%;
+  border-right: 1px solid #ccc;
+  padding-right: 20px;
+}
+
+.registration-form {
+  width: 50%;
+  padding-left: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+input[type="email"],
+button {
+  width: 40%;
+  padding: 10px;
 }

@@ -1,0 +1,56 @@
+/* Hide the default radio button */
+.time-slot-selector input[type="radio"] {
+    display: none;
+}
+
+/* Custom radio button styling */
+.time-slot-selector label {
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: inline-block;
+    user-select: none;
+}
+
+/* The outer circle of the radio button */
+.time-slot-selector label:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #FF0000; /* Red border */
+    border-radius: 50%; /* Round for radio button */
+    background-color: white;
+    transition: background-color 0.5s ease, transform 0.4s ease-in-out;
+    transform: perspective(100px);
+}
+
+/* Flip effect on checked */
+.time-slot-selector input[type="radio"]:checked + label:before {
+    background-color: #FF0000; /* Red fill when selected */
+    transform: rotateY(180deg); /* Flip effect */
+}
+
+/* The dot inside the radio button */
+.time-slot-selector label:after {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: -2px;
+    font-size: 18px;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    transform: rotateY(180deg); /* Rotate the dot with the background */
+}
+
+/* Dot becomes visible when checked */
+.time-slot-selector input[type="radio"]:focus + label:before,
+.time-slot-selector input[type="radio"]:active + label:before {
+    outline: none;
+    border-color: #FF0000; /* Keep the border red to avoid flashing */
+}

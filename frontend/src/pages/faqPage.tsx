@@ -1,7 +1,8 @@
 // FaqPage.tsx
 
 import React from 'react';
-import { faqList } from '../components/faq-list.ts';  // Import the FaqPage list
+import { faqList } from '../components/faq-list.ts';
+import Footer from "../components/Footer.tsx";  // Import the FaqPage list
 
 const FaqPage: React.FC = () => {
     return (
@@ -22,7 +23,7 @@ const FaqPage: React.FC = () => {
                     </li>
                 ))}
             </ul>
-
+            <Footer/>
         </div>
     );
 };

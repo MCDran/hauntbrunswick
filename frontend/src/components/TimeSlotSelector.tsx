@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/TimeSlotSelector.css'
 
 interface TimeSlot {
     time_slot: string;
@@ -13,16 +14,20 @@ interface TimeSlotSelectorProps {
 
 const TimeSlotSelector: React.FC<TimeSlotSelectorProps> = ({ timeSlots, selectedTimeSlot, onSelectTimeSlot }) => {
     return (
-        <div>
-            <label>Choose a Time Slot:</label>
-            <select value={selectedTimeSlot} onChange={(e) => onSelectTimeSlot(e.target.value)} required>
-                <option value="" disabled>Select a time slot</option>
-                {timeSlots.map((slot, index) => (
-                    <option key={index} value={slot.time_slot} disabled={slot.spots_remaining === 0}>
+        <div className="time-slot-selector">
+            {timeSlots.map((slot, index) => (
+                <div key={index} className="time-slot-item">
+                    <input
+                        type="radio"
+                        id={`timeslot-${index}`}
+                        checked={selectedTimeSlot === slot.time_slot}
+                        onChange={() => onSelectTimeSlot(slot.time_slot)}
+                    />
+                    <label htmlFor={`timeslot-${index}`}>
                         {slot.time_slot} ({slot.spots_remaining} spots remaining)
-                    </option>
-                ))}
-            </select>
+                    </label>
+                </div>
+            ))}
         </div>
     );
 };

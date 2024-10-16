@@ -13,7 +13,7 @@ const PORT = 5000;
 
 const allowedOrigins = [
     'http://localhost:5173',
-    `http://${process.env.LOCAL_IP}:5173`  // Replace with your local IP or set it in .env
+    `http://${process.env.LOCAL_IP}:5173`  // Set it in .env
 ];
 
 app.use(cors({

@@ -1,0 +1,94 @@
+/* General layout for larger screens */
+.register-container {
+    display: flex;
+    flex-direction: row; /* Side-by-side layout */
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 20px; /* Add space between time slots and registration form */
+}
+
+.time-slot-selector {
+    width: 45%;
+    border-right: 1px solid red;
+    padding-right: 1em;
+}
+
+.registration-form {
+    width: 70%;
+    padding-left: 20px;
+}
+
+.form-group {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+input[type="email"],
+button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: red;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+ul li {
+    margin-bottom: 1.2em;
+}
+
+/* Mobile-first design - adjusts layout for smaller screens */
+@media (max-width: 768px) {
+    .register-container {
+        flex-direction: column; /* Stack time slots and form vertically */
+        padding: 10px; /* Reduce padding for smaller screens */
+    }
+
+    .time-slot-selector {
+        width: 100%; /* Full width on mobile */
+        border-right: none; /* Remove border */
+        padding-right: 0;
+        margin-bottom: 20px; /* Add space below time slots */
+    }
+
+    .registration-form {
+        width: 100%; /* Full width on mobile */
+        padding-left: 0;
+    }
+
+    input[type="email"],
+    button {
+        width: 100%; /* Ensure full width for email and buttons */
+        font-size: 0.9rem; /* Slightly smaller font size for mobile */
+        padding: 12px;
+    }
+}
+
+/* Extra large screens (e.g., desktops) */
+@media (min-width: 1024px) {
+    .register-container {
+        padding: 30px;
+    }
+
+    .time-slot-selector {
+        padding-right: 1.5em;
+    }
+
+    .registration-form {
+        padding-left: 30px;
+    }
+
+    input[type="email"],
+    button {
+        padding: 15px;
+        font-size: 1.1rem;
+    }
+}

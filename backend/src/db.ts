@@ -34,7 +34,6 @@ export const getAvailableTimeSlots = async () => {
         const [rows] = await pool.query(
             'SELECT time_slot, spots_remaining FROM time_slots WHERE spots_remaining > 0'
         );
-        console.log('Time slots:', rows); // Log the result for debugging
         return rows;
     } catch (error) {
         console.error('Database query failed:', error); // Log any database errors
@@ -147,7 +146,7 @@ export const removeAttendeeFromRegistration = async (registrationId: number, att
         );
 
         if (registrationRows.length === 0) {
-            throw new Error('Registration not found');
+            throw Error('Registration not found');
         }
 
         const { names, ages, time_slot } = registrationRows[0];
@@ -184,9 +183,9 @@ export const removeAttendeeFromRegistration = async (registrationId: number, att
         );
 
         await connection.commit();
-    } catch (error) {
+    } catch (Error) {
         await connection.rollback();
-        throw error;
+        throw Error;
     } finally {
         connection.release();
     }
