@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom'; // Import useLocation to read query params
 import SearchForm from '../components/SearchForm'; // Import the SearchForm component
 
 interface Registration {
@@ -15,6 +16,10 @@ const SearchPage: React.FC = () => {
     const [registration, setRegistration] = useState<Registration | null>(null);
     const [removing, setRemoving] = useState<boolean>(false);  // Track if removing is in progress
     const [error, setError] = useState<string | null>(null);
+
+    const location = useLocation(); // Use useLocation hook to get query params
+    const searchParams = new URLSearchParams(location.search);
+    const initialRegistrationNumber = searchParams.get('registrationNumber'); // Get 'registrationNumber' from query params
 
     // Handle search result from SearchForm
     const handleSearchComplete = (registration: Registration | null) => {
@@ -82,7 +87,8 @@ const SearchPage: React.FC = () => {
     return (
         <div className="vertical-container">
             <h1>Search for a Registration</h1>
-            <SearchForm onSearchComplete={handleSearchComplete} />
+            {/* Pass the registration number from the URL as the initial value */}
+            <SearchForm initialRegistrationNumber={initialRegistrationNumber || ''} onSearchComplete={handleSearchComplete} />
 
             {registration && (
                 <div>

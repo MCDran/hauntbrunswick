@@ -41,6 +41,15 @@ input[type="checkbox"] {
     margin-right: 10px;
 }
 
+.link-button {
+    background: none;
+    color: red;
+    text-decoration: underline;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
 ul li {
     margin-bottom: 1.2em;
 }

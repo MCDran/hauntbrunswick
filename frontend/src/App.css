@@ -38,6 +38,7 @@ ul {
   transition: background-color 0.3s ease;     /* Smooth transition for hover */
   min-width: 150px;           /* Minimum width for readability */
   max-width: 200px;           /* Limit button's maximum width */
+  max-height: 3rem;
   flex: 1 1 200px;            /* Ensure button is flexible and adjusts */
 }
 

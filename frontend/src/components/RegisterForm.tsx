@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import AttendeeList from './AttendeeList';
-import {Link} from "react-router-dom";
 import '../styles/RegisterForm.css'
 import '../App.css'
 import TimeSlotSelector from "./TimeSlotSelector.tsx";
@@ -120,6 +119,11 @@ const RegisterForm: React.FC = () => {
         }
     };
 
+    function handleOpenNewTab() {
+        const newWindow = window.open('/fromRegister', '_blank', 'noopener,noreferrer');
+        if (newWindow) newWindow.opener = null;
+    }
+
     return (
         <div className="register-container">
             {/* Time Slot Selector - Left side */}
@@ -158,7 +162,7 @@ const RegisterForm: React.FC = () => {
                             checked={isChecked}
                             onChange={(e) => setIsChecked(e.target.checked)}
                         />
-                        I/We have read, understood, and agree to the <Link to="/">What to Expect</Link> for the 16+ night.
+                        I/We have read, understood, and agree to the <button type="button" className="link-button" onClick={handleOpenNewTab}>What to Expect</button> for the 16+ night.
                     </label>
 
                     <button type="submit" className="button" disabled={loading}>

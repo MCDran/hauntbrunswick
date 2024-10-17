@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface Registration {
     id: number;
@@ -12,20 +12,21 @@ interface Registration {
 
 interface SearchFormProps {
     onSearchComplete: (registration: Registration | null) => void;
+    initialRegistrationNumber?: string; // Allow initial registration number to be passed
 }
 
-const SearchForm: React.FC<SearchFormProps> = ({ onSearchComplete }) => {
-    const [registrationNumber, setRegistrationNumber] = useState<string>('');
+const SearchForm: React.FC<SearchFormProps> = ({ onSearchComplete, initialRegistrationNumber }) => {
+    const [registrationNumber, setRegistrationNumber] = useState<string>(initialRegistrationNumber || '');
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    const handleSearch = async (e: React.FormEvent) => {
-        e.preventDefault();
+    // Perform the search when the form is submitted
+    const handleSearch = async (registrationNum: string) => {
         setLoading(true);
         setError(null);
 
         try {
-            const response = await fetch(`http://localhost:5000/api/registrations/search?registration_number=${registrationNumber}`);
+            const response = await fetch(`http://localhost:5000/api/registrations/search?registration_number=${registrationNum}`);
 
             if (!response.ok) {
                 const errorMessage = response.status === 404
@@ -36,7 +37,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearchComplete }) => {
 
             const data = await response.json();
             if (data.data && data.data.length > 0) {
-                onSearchComplete(data.data[0]);  // Pass the first registration result to the parent component
+                onSearchComplete(data.data[0]); // Pass the first registration result to the parent component
             } else {
                 onSearchComplete(null);
                 setError('No registration found for that number');
@@ -49,8 +50,20 @@ const SearchForm: React.FC<SearchFormProps> = ({ onSearchComplete }) => {
         }
     };
 
+    // Auto search when component mounts if initialRegistrationNumber is provided
+    useEffect(() => {
+        if (initialRegistrationNumber) {
+            handleSearch(initialRegistrationNumber);
+        }
+    }, [initialRegistrationNumber]);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        handleSearch(registrationNumber);
+    };
+
     return (
-        <form onSubmit={handleSearch}>
+        <form onSubmit={handleSubmit}>
             <label>
                 Registration Number:
                 <input

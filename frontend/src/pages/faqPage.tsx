@@ -2,12 +2,16 @@
 
 import React from 'react';
 import { faqList } from '../components/faq-list.ts';
-import Footer from "../components/Footer.tsx";  // Import the FaqPage list
+import Footer from "../components/Footer.tsx";
+import {Link} from "react-router-dom";  // Import the FaqPage list
 
 const FaqPage: React.FC = () => {
     return (
         <div className="vertical-container">
             <h1>Frequently Asked Questions</h1>
+            <div>
+            <Link to='/' className="button">Return to Home</Link>
+            </div>
             <ul>
                 {faqList.map((faq, index) => (
                     <li key={index}>

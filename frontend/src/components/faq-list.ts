@@ -72,14 +72,4 @@ export const faqList = [
             "If you're purchasing food or drinks, the proceeds will also go toward the donations."
         ]
     },
-    {
-        header: "How can I volunteer to help with the event?",
-        items: [
-            "If you'd like to help, check out the link below, and sign up to volunteer!"
-        ],
-        link: {
-            text: "Volunteer sign up",
-            url: "https://hauntbrunswick.com"
-        }
-    }
 ];

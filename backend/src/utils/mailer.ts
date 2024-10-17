@@ -18,19 +18,26 @@ const transporter = nodemailer.createTransport({
 });
 
 // Define a function to send email using async/await
-export const sendEmailWithQRCode = async (to: string, subject: string, text: string, qrCodeDataURL: string): Promise<void> => {
+export const sendEmailWithQRCode = async (
+    to: string,
+    subject: string,
+    text: string,
+    qrCodeDataURL: string,
+    html: string // Add HTML content argument
+): Promise<void> => {
     const mailOptions = {
         from: process.env.SMTP_USER, // Sender address
         to,                          // Recipient email
         subject,                     // Email subject
         text,                        // Email content (plain text)
+        html,                        // HTML content for richer formatting
         attachments: [
             {
                 filename: 'qrcode.png',
                 content: qrCodeDataURL.split('base64,')[1], // Remove 'data:image/png;base64,' part
                 encoding: 'base64'                          // Encode as base64
             }
-        ]
+        ],
     };
 
     try {
@@ -40,4 +47,6 @@ export const sendEmailWithQRCode = async (to: string, subject: string, text: str
         console.error('Error sending email:', error);
         throw new Error('Failed to send email');
     }
+
+await transporter.sendMail(mailOptions);
 };

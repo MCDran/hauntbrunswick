@@ -47,8 +47,23 @@ const registerAttendeesRoute: RequestHandler = async (req, res): Promise<void> =
         // Generate QR code with registration number and email
         const qrCodeURL = await generateQRCode(registrationNumber, email);
 
-        // Send email with QR code attached
-        await sendEmailWithQRCode(email, 'Registration Confirmation', `Thank you for registering for the time slot: ${time_slot}.`, qrCodeURL);
+        // Link to view or cancel registration
+        const link = `http://hauntbrunswick.com/search?registrationNumber=${registrationNumber}`;
+
+        // HTML content with links
+        const htmlContent = `
+            <p>Thank you for registering for the time slot: ${time_slot}.</p>
+            <p>You can view your registration details <a href="${link}">here</a>.</p>
+        `;
+
+        // Send email with QR code attached and links included
+        await sendEmailWithQRCode(
+            email,
+            'Registration Confirmation',
+            `Thank you for registering for the time slot: ${time_slot}.`,
+            qrCodeURL,
+            htmlContent
+        );
 
         res.json({ success: true, message: 'Registration successful' });
     } catch (error) {
