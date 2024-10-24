@@ -3,26 +3,17 @@ FROM node:18-alpine AS build
 
 WORKDIR /app
 
-# Copy package.json and install dependencies
+# Copy only package.json and lockfile first (for better caching)
 COPY ./frontend/package.json ./frontend/package-lock.json ./
 
-# Install both dependencies and devDependencies
-RUN npm install --frozen-lockfile --production=false
+# Install both dependencies and devDependencies (uses caching)
+RUN npm ci
 
-# Explicitly install TypeScript (troubleshooting step)
-RUN npm install typescript
-
-# Find the TypeScript installation path (troubleshooting step)
-RUN find / -name "tsc"
-
-# Check TypeScript version (troubleshooting step)
-RUN tsc --version
-
-# Copy the rest of the source files to the container (including tsconfig.json)
+# Copy the rest of the app files to the container
 COPY ./frontend .
 
 # Build the Vite app
-RUN tsc -b && vite build
+RUN npm run build
 
 # Stage 2: Serve the built app using a lightweight server
 FROM node:18-alpine AS serve
@@ -32,7 +23,7 @@ WORKDIR /app
 # Copy the build output from the build stage
 COPY --from=build /app/dist ./dist
 
-# Install serve
+# Install serve globally
 RUN npm install -g serve
 
 # Expose the port your app will run on
