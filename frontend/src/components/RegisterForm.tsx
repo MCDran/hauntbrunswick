@@ -119,10 +119,13 @@ const RegisterForm: React.FC = () => {
         }
     };
 
-    function handleOpenNewTab() {
-        const newWindow = window.open('/fromRegister', '_blank', 'noopener,noreferrer');
-        if (newWindow) newWindow.opener = null;
-    }
+    const openFAQInNewTab = () => {
+        const faqUrl = '/faq?fromRegistration=true'; // Pass the state as a query parameter
+        const newTab = window.open(faqUrl, '_blank', 'noopener,noreferrer'); // Open in a new tab
+        if (newTab) {
+            newTab.opener = null; // Ensure no interaction with the original tab
+        }
+    };
 
     return (
         <div className="register-container">
@@ -162,7 +165,11 @@ const RegisterForm: React.FC = () => {
                             checked={isChecked}
                             onChange={(e) => setIsChecked(e.target.checked)}
                         />
-                        I/We have read, understood, and agree to the <button type="button" className="link-button" onClick={handleOpenNewTab}>What to Expect</button> for the 16+ night.
+                        I/We have read, understood, and agree to the{' '}
+                        <button onClick={openFAQInNewTab} className="link-button">
+                            What to Expect
+                        </button>
+                        for the 16+ night.
                     </label>
 
                     <button type="submit" className="button" disabled={loading}>

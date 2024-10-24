@@ -1,29 +1,39 @@
-// FaqPage.tsx
-
 import React from 'react';
 import { faqList } from '../components/faq-list.ts';
 import Footer from "../components/Footer.tsx";
-import {Link} from "react-router-dom";  // Import the FaqPage list
+import { Link, useLocation } from "react-router-dom";  // Import necessary hooks
 
 const FaqPage: React.FC = () => {
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search); // Parse the query parameters
+    const fromRegistration = queryParams.get('fromRegistration') === 'true';
+    const handleCloseTab = () => {
+        if (window.opener) {
+            window.close(); // Close the tab if it was opened from the registration page
+        } else {
+            window.location.href = '/'; // Fallback to redirect to the home page
+            console.log(Error)
+        }
+    };
+
     return (
         <div className="vertical-container">
             <h1>Frequently Asked Questions</h1>
             <div>
-            <Link to='/' className="button">Return to Home</Link>
+                <Link to='/' className="button">Return to Home</Link>
             </div>
+            {/* Show close button only if opened from registration */}
+            {fromRegistration && (
+                <button className="button" onClick={handleCloseTab}>Return to Registration</button>
+            )}
             <ul>
+
                 {faqList.map((faq, index) => (
                     <li key={index}>
                         <h2>{faq.header}</h2>
                         {faq.items.map((item, i) => (
                             <p key={i}>{item}</p>
                         ))}
-                        {faq.link && (
-                            <a href={faq.link.url} target="_blank" rel="noopener noreferrer">
-                                {faq.link.text}
-                            </a>
-                        )}
                     </li>
                 ))}
             </ul>
