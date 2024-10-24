@@ -12,6 +12,9 @@ RUN npm install --frozen-lockfile --production=false
 # Explicitly install TypeScript (troubleshooting step)
 RUN npm install typescript
 
+# Find the TypeScript installation path (troubleshooting step)
+RUN find / -name "tsc"
+
 # Check TypeScript version (troubleshooting step)
 RUN tsc --version
 
