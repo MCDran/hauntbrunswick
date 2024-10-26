@@ -1,9 +1,9 @@
-name: Docker Image CI
+name: Docker Image V1
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build-and-push:
