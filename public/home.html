@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Haunt Brunswick</title>
+  <link rel="stylesheet" href="spooky-theme.css">
+  <style>
+    body {
+      display: block; /* Allow the content to stack vertically */
+      min-height: 100vh;
+      background-color: #0b0c0d;
+      margin: 0;
+      overflow-x: hidden; /* Prevent horizontal scrolling */
+      overflow-y: auto; /* Allow full vertical scrolling */
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      padding: 20px;
+      text-align: center;
+      align-items: center;
+    }
+
+
+    .left, .right {
+      background-size: cover;
+      background-position: center;
+      height: 100%;
+    }
+
+    .left {
+      background-image: url('left-image.jpg');
+    }
+
+    .right {
+      background-image: url('right-image.jpg');
+    }
+
+    .content {
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+      max-width: 500px;
+      margin: 20px auto;
+      overflow: auto; /* Allow content to scroll if it exceeds the content box size */
+    }
+
+    h1 {
+      font-family: 'Creepster', cursive, sans-serif;
+      font-size: 4rem;
+      color: #ff4444;
+      text-shadow: 3px 3px 10px black;
+    }
+
+    h1, h2 {
+      margin: 10px;
+    }
+
+    p {
+      font-size: 1.5rem;
+      color: #ffcc00;
+      text-shadow: 1px 1px 5px black;
+      margin: 15px 0;
+    }
+
+    a.button {
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      background-color: #ff4444;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      width: 75%;
+    }
+
+    a.button:hover {
+      background-color: #880000;
+      color: black;
+      box-shadow: 0 0 15px #ffcc00;
+    }
+
+    .logo-container {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .small-logo {
+      width: 100px; /* Adjust as necessary */
+      height: auto;
+    }
+
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        bottom: 100px;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+      }
+      .left, .right {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="container">
+    <div class="left"></div>
+    <a href="/faq" class="top-left">Tell me More!</a>
+    <div class="content">
+      <h1>Welcome to Haunt Brunswick</h1>
+      <h2>Brunswick's Finest Haunted House</h2>
+    </div>
+    </div>
+    <div class="right"></div>
+    <div class="logo-container">
+      <img src="logos/CBPR_logo_final.png" alt="City of Brunswick Parks and Recreation" class="small-logo">
+      <img src="logos/COB-Logo_RGB.png" alt="City of Brunswick Maryland" class="small-logo">
+    </div>
+  </div>
+</body>
+</html>
